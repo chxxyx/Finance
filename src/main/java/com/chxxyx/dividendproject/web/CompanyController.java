@@ -1,8 +1,12 @@
 package com.chxxyx.dividendproject.web;
 
 import com.chxxyx.dividendproject.model.Company;
+import com.chxxyx.dividendproject.persist.entity.CompanyEntity;
 import com.chxxyx.dividendproject.service.CompanyService;
+import java.util.List;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,8 +29,9 @@ public class CompanyController {
 	}
 
 	@GetMapping("/company")
-	public ResponseEntity<?> searchCompany() {
-		return null;
+	public ResponseEntity<?> searchCompany(final Pageable pageable) {
+		Page<CompanyEntity> companies = this.companyService.getAllCompany(pageable);
+		return ResponseEntity.ok(companies);
 	}
 
 	@PostMapping("/company")
