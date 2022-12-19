@@ -1,8 +1,10 @@
 package com.chxxyx.dividendproject.service;
 
+import com.chxxyx.dividendproject.exception.impl.AlreadyExistUserException;
 import com.chxxyx.dividendproject.model.Auth;
 import com.chxxyx.dividendproject.persist.entity.MemberEntity;
 import com.chxxyx.dividendproject.persist.MemberRepository;
+import java.rmi.AlreadyBoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +29,7 @@ public class MemberService implements UserDetailsService {
 	public MemberEntity register(Auth.SignUp member) {
 		boolean exists = this.memberRepository.existsByUsername(member.getUsername());
 		if (exists) {
-			throw new RuntimeException("이미 사용 중인 아이디 입니다.");
+			throw new AlreadyExistUserException();
 		}
 
 		// 비밀번호 암호화
