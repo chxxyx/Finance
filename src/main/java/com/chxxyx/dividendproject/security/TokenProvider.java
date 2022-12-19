@@ -1,5 +1,7 @@
 package com.chxxyx.dividendproject.security;
 
+import com.chxxyx.dividendproject.persist.MemberRepository;
+import com.chxxyx.dividendproject.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -9,6 +11,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -18,6 +23,7 @@ public class TokenProvider {
 
 	private static final String KEY_ROLES = "roles";
 	private static final long TOKEN_EXPIRE_TIME = 1000 * 60 * 60; // 1 시간
+	private final MemberService memberService;
 
 	@Value("${spring.jwt.secret}")
 	private String secretKey;
@@ -46,7 +52,11 @@ public class TokenProvider {
 		return this.parseClaims(token).getSubject();
 	}
 
-	public boolean validToken(String token) {
+	public Authentication getAuthentication(String jwt) {
+		UserDetails userDetails = this.memberService.loadUserByUsername(this.getUsername(jwt));
+		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+	}
+	public boolean validateToken(String token) {
 		if (!StringUtils.hasText(token)) {
 			return false;
 		}
