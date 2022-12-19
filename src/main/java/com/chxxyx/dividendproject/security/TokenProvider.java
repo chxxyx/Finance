@@ -48,7 +48,7 @@ public class TokenProvider {
 			.compact();
 	}
 
-	private String getUsername(String token) {
+	public String getUsername(String token) {
 		return this.parseClaims(token).getSubject();
 	}
 
